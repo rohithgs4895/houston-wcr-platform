@@ -141,7 +141,7 @@ def _build_status_timeline(row):
         ("In Review", None, row.get("status") in ["In Review", "Approved", "Denied", "Revision Needed"]),
         ("Letter Issued", None, row.get("status") in ["Approved", "Denied"]),
     ]
-    html = '<div style="display:flex;align-items:center;gap:0;margin:12px 0;">'
+    html = '<div style="display:flex;align-items:center;gap:0;margin:12px 0;color:#1a1a1a;">'
     for i, (label, dt, done) in enumerate(stages):
         color = COLORS["houston_blue"] if done else "#e5e7eb"
         text_color = "#2c3e50" if done else "#9ca3af"
