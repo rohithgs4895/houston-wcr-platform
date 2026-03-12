@@ -199,25 +199,24 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    # System status dots
-    st.markdown(
-        '<div style="background:#1e293b !important;border-radius:6px;padding:10px 12px;'
-        'font-family:monospace;font-size:0.72rem;">'
-        '<div style="color:#60a5fa !important;font-weight:700 !important;margin-bottom:6px;">'
-        'SYSTEM STATUS</div>'
-        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
-        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> Q-Flow</span>'
-        '&nbsp;&nbsp;&nbsp;'
-        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
-        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> GIMS</span><br>'
-        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
-        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> ILMS</span>'
-        '&nbsp;&nbsp;&nbsp;&nbsp;'
-        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
-        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> Kronos</span>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
+    # System status
+    st.markdown("**🖥️ System Status**")
+    systems = [
+        ("Q-Flow", "Connected", "#27ae60"),
+        ("GIMS", "Connected", "#27ae60"),
+        ("ILMS", "Connected", "#27ae60"),
+        ("Kronos", "Connected", "#27ae60"),
+    ]
+    for system_name, status, color in systems:
+        st.markdown(
+            f'<div style="display:flex; justify-content:space-between; '
+            f'padding:4px 8px; margin:2px 0; background:#ffffff; '
+            f'border-radius:4px; border:1px solid #dee2e6;">'
+            f'<span style="color:#1a1a1a; font-weight:500;">{system_name}</span>'
+            f'<span style="color:{color}; font-weight:700;">● {status}</span>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
     st.markdown("---")
 

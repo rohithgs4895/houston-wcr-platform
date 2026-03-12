@@ -421,9 +421,19 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
 
             # Capacity status card
             st.markdown("**Zone Capacity Check**")
-            cap1, cap2, cap3 = st.columns(3)
+            status_color = {"Available": "#27ae60", "Near Limit": "#f39c12", "At Limit": "#e74c3c"}.get(cap_status, "#27ae60")
+            cap1, cap2 = st.columns(2)
             cap1.metric("Service Units", f"{app_row.get('service_units', 0):.1f}")
-            cap2.metric("Zone Status", cap_status)
-            cap3.metric("Gallons/Day", f"{app_row.get('service_units', 0) * 250:,.0f}")
+            cap1.metric("Gallons/Day", f"{app_row.get('service_units', 0) * 250:,.0f}")
+            with cap2:
+                st.markdown(
+                    f'<div style="padding:12px; background:#f8f9fa; '
+                    f'border-radius:8px; border-left:4px solid {status_color};">'
+                    f'<p style="color:#444444; margin:0; font-size:12px;">Zone Status</p>'
+                    f'<p style="color:{status_color}; font-size:18px; '
+                    f'font-weight:700; margin:4px 0;">{cap_status}</p>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
     else:
         st.info("Select a row in the table above to view application details and mini-map.")
