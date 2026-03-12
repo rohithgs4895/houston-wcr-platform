@@ -201,14 +201,21 @@ with st.sidebar:
 
     # System status dots
     st.markdown(
-        f'<div style="background:#1e293b;border-radius:6px;padding:10px 12px;font-family:monospace;'
-        f'font-size:0.72rem;color:#94a3b8;">'
-        f'<div style="color:#60a5fa;font-weight:700;margin-bottom:6px;">SYSTEM STATUS</div>'
-        f'<span style="color:#4ade80;">&#9679;</span> Q-Flow&nbsp;&nbsp;&nbsp; '
-        f'<span style="color:#4ade80;">&#9679;</span> GIMS<br>'
-        f'<span style="color:#4ade80;">&#9679;</span> ILMS&nbsp;&nbsp;&nbsp;&nbsp; '
-        f'<span style="color:#4ade80;">&#9679;</span> Kronos'
-        f'</div>',
+        '<div style="background:#1e293b !important;border-radius:6px;padding:10px 12px;'
+        'font-family:monospace;font-size:0.72rem;">'
+        '<div style="color:#60a5fa !important;font-weight:700 !important;margin-bottom:6px;">'
+        'SYSTEM STATUS</div>'
+        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
+        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> Q-Flow</span>'
+        '&nbsp;&nbsp;&nbsp;'
+        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
+        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> GIMS</span><br>'
+        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
+        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> ILMS</span>'
+        '&nbsp;&nbsp;&nbsp;&nbsp;'
+        '<span style="color:#27ae60 !important;font-weight:700 !important;">&#9679;</span>'
+        '<span style="color:#e2e8f0 !important;font-weight:500 !important;"> Kronos</span>'
+        '</div>',
         unsafe_allow_html=True,
     )
 

@@ -317,6 +317,19 @@ def get_main_css():
             font-weight: 700 !important;
         }}
 
+        /* ── Sidebar filter widget text ──────────────────────── */
+        [data-testid="stSidebar"] .stMultiSelect span,
+        [data-testid="stSidebar"] .stMultiSelect div,
+        [data-testid="stSidebar"] [data-baseweb="select"] span,
+        [data-testid="stSidebar"] [data-baseweb="tag"] span {{
+            color: #1a1a1a !important;
+            background-color: #e8f0fe !important;
+        }}
+        [data-testid="stSidebar"] .stDateInput label,
+        [data-testid="stSidebar"] .stDateInput input {{
+            color: #1a1a1a !important;
+        }}
+
         /* ── Alert / warning boxes ───────────────────────────── */
         .alert-box {{
             padding: 12px 16px;

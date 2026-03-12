@@ -62,11 +62,13 @@ def _render_sla_status(sla_info):
 
 def _render_fee_table(row):
     """Render impact fee breakdown using pure Streamlit components."""
-    f1, f2, f3, f4 = st.columns(4)
-    f1.metric("Wastewater Fee", f"${row.get('wastewater_impact_fee', 0):,.2f}")
-    f2.metric("Water Fee", f"${row.get('water_impact_fee', 0):,.2f}")
-    f3.metric("Admin Fee", "$150.00")
-    f4.metric("TOTAL", f"${row.get('total_impact_fee', 0):,.2f}")
+    f1, f2 = st.columns(2)
+    with f1:
+        st.metric("Wastewater Fee", f"${row.get('wastewater_impact_fee', 0):,.2f}")
+        st.metric("Admin Fee", "$150.00")
+    with f2:
+        st.metric("Water Fee", f"${row.get('water_impact_fee', 0):,.2f}")
+        st.metric("TOTAL", f"${row.get('total_impact_fee', 0):,.2f}")
     st.caption(
         f"{row.get('service_units', 0):.2f} SU × 250 gpd = "
         f"{row.get('service_units', 0) * 250:,.0f} gpd/day"
@@ -133,38 +135,50 @@ def _detail_mini_map(app_row, plants_gdf, zones_gdf, zone_util_df):
     return m
 
 
-def _build_status_timeline(row):
-    """Generate a visual status timeline."""
+def _render_timeline(row):
+    """Render application status timeline using pure Streamlit components."""
+    status = row.get("status", "Pending")
+    try:
+        sub_date = pd.to_datetime(row.get("submission_date")).strftime("%m/%d/%Y")
+    except Exception:
+        sub_date = "N/A"
+
     stages = [
-        ("Submitted", row.get("submission_date"), True),
-        ("Assigned", row.get("submission_date"), row.get("status") not in ["Pending"]),
-        ("In Review", None, row.get("status") in ["In Review", "Approved", "Denied", "Revision Needed"]),
-        ("Letter Issued", None, row.get("status") in ["Approved", "Denied"]),
+        {
+            "name": "Submitted",
+            "date": sub_date,
+            "completed": True,
+            "current": False,
+        },
+        {
+            "name": "Assigned",
+            "date": sub_date,
+            "completed": status not in ["Pending"],
+            "current": status == "Pending",
+        },
+        {
+            "name": "In Review",
+            "date": None,
+            "completed": status in ["Approved", "Denied"],
+            "current": status in ["In Review", "On Hold", "Revision Needed"],
+        },
+        {
+            "name": "Letter Issued",
+            "date": None,
+            "completed": status in ["Approved", "Denied"],
+            "current": False,
+        },
     ]
-    html = '<div style="display:flex;align-items:center;gap:0;margin:12px 0;color:#1a1a1a;">'
-    for i, (label, dt, done) in enumerate(stages):
-        color = COLORS["houston_blue"] if done else "#e5e7eb"
-        text_color = "#2c3e50" if done else "#9ca3af"
-        dt_str = ""
-        if dt is not None and done:
-            try:
-                dt_str = f'<div style="font-size:10px;color:#9ca3af;">{pd.to_datetime(dt).strftime("%m/%d/%y")}</div>'
-            except Exception:
-                pass
-        html += f"""
-        <div style="text-align:center;flex:1;">
-            <div style="width:28px;height:28px;border-radius:50%;background:{color};
-                        margin:0 auto 4px;display:flex;align-items:center;justify-content:center;
-                        color:white;font-size:12px;font-weight:700;">{i+1}</div>
-            <div style="font-size:11px;font-weight:600;color:{text_color};">{label}</div>
-            {dt_str}
-        </div>
-        """
-        if i < len(stages) - 1:
-            line_color = COLORS["houston_blue"] if done else "#e5e7eb"
-            html += f'<div style="flex:0 0 20px;height:2px;background:{line_color};margin-top:14px;"></div>'
-    html += "</div>"
-    return html
+
+    st.markdown("#### 📅 Application Timeline")
+    for stage in stages:
+        date_str = f" — {stage['date']}" if stage.get("date") else ""
+        if stage["completed"]:
+            st.success(f"✅ {stage['name']}{date_str}")
+        elif stage["current"]:
+            st.info(f"🔄 {stage['name']} — In Progress")
+        else:
+            st.caption(f"⏳ {stage['name']} — Pending")
 
 
 import geopandas as gpd
@@ -391,8 +405,7 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
             )
 
             # Status timeline
-            st.markdown("**Application Timeline**")
-            st.markdown(_build_status_timeline(app_row), unsafe_allow_html=True)
+            _render_timeline(app_row)
 
             # Notes
             st.markdown(f"**Procedural Notes:** _{app_row.get('notes','')}_")
