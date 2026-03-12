@@ -343,6 +343,52 @@ def get_main_css():
         /* Hide streamlit default header/footer */
         #MainMenu, footer {{ visibility: hidden; }}
         header[data-testid="stHeader"] {{ display: none; }}
+
+        /* ── Force dark readable text globally ───────────────── */
+        html, body, [class*="css"], .stApp {{
+            color: #1a1a1a !important;
+        }}
+
+        [data-testid="stMetricLabel"] {{
+            color: #1a1a1a !important;
+            font-weight: 600 !important;
+        }}
+
+        [data-testid="stMetricValue"] {{
+            color: #003087 !important;
+            font-weight: 700 !important;
+        }}
+
+        [data-testid="stSidebar"] * {{
+            color: #1a1a1a !important;
+        }}
+
+        h1, h2, h3, h4, h5, h6 {{
+            color: #003087 !important;
+            font-weight: 700 !important;
+        }}
+
+        p, span, div, label {{
+            color: #1a1a1a !important;
+        }}
+
+        [data-testid="stDataFrame"] * {{
+            color: #1a1a1a !important;
+        }}
+
+        [data-testid="stCaptionContainer"] {{
+            color: #444444 !important;
+        }}
+
+        .stRadio label, .stCheckbox label, .stSelectbox label {{
+            color: #1a1a1a !important;
+            font-weight: 500 !important;
+        }}
+
+        .stTabs [data-baseweb="tab"] {{
+            color: #003087 !important;
+            font-weight: 600 !important;
+        }}
     </style>
     """
 
