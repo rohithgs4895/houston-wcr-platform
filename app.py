@@ -11,6 +11,7 @@ Run: streamlit run app.py
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import pytz
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -148,9 +149,9 @@ with st.sidebar:
     clock_placeholder.markdown(
         f'<div style="text-align:center;font-size:0.78rem;color:{COLORS["text_light"]};'
         f'font-family:monospace;padding:4px 0 8px 0;">'
-        f'{datetime.now().strftime("%A, %B %d %Y")}<br>'
+        f'{datetime.now(pytz.timezone("America/Chicago")).strftime("%A, %B %d %Y")}<br>'
         f'<span style="font-size:1.1rem;font-weight:700;color:{COLORS["houston_blue"]};">'
-        f'{datetime.now().strftime("%I:%M %p")}</span></div>',
+        f'{datetime.now(pytz.timezone("America/Chicago")).strftime("%I:%M %p")} CT</span></div>',
         unsafe_allow_html=True,
     )
 

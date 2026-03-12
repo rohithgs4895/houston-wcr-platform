@@ -17,6 +17,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import date, datetime, timedelta
+import pytz
 
 from utils.styling import (
     COLORS, render_section_header, render_metric_card, render_alert
@@ -174,9 +175,13 @@ def _sla_trend_chart(df):
         xaxis_title=None, yaxis_title="Compliance %",
         yaxis=dict(range=[60, 105]),
         height=280, margin=dict(l=0, r=10, t=40, b=10),
-        plot_bgcolor="white", paper_bgcolor="white",
+        plot_bgcolor="#f8f9fa", paper_bgcolor="white",
         showlegend=False,
+        font=dict(color="#1a1a1a", size=12),
+        title_font=dict(color="#003087", size=14),
     )
+    fig.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+    fig.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
     return fig
 
 
@@ -208,10 +213,14 @@ def _analyst_status_chart(df):
         title="Applications by Analyst",
         barmode="group", height=280,
         margin=dict(l=0, r=10, t=40, b=10),
-        plot_bgcolor="white", paper_bgcolor="white",
+        plot_bgcolor="#f8f9fa", paper_bgcolor="white",
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
         xaxis_title=None, yaxis_title="Count",
+        font=dict(color="#1a1a1a", size=12),
+        title_font=dict(color="#003087", size=14),
     )
+    fig.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+    fig.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
     return fig
 
 
@@ -256,8 +265,12 @@ def _weekly_heatmap_chart(df):
         title="Weekly Application Volume",
         height=280, margin=dict(l=0, r=10, t=40, b=10),
         xaxis_title=None, yaxis_title=None,
-        plot_bgcolor="white", paper_bgcolor="white",
+        plot_bgcolor="#f8f9fa", paper_bgcolor="white",
+        font=dict(color="#1a1a1a", size=12),
+        title_font=dict(color="#003087", size=14),
     )
+    fig.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+    fig.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
     return fig
 
 
@@ -278,8 +291,12 @@ def _funnel_chart(df):
     fig.update_layout(
         title="Application Processing Funnel",
         height=280, margin=dict(l=0, r=10, t=40, b=10),
-        plot_bgcolor="white", paper_bgcolor="white",
+        plot_bgcolor="#f8f9fa", paper_bgcolor="white",
+        font=dict(color="#1a1a1a", size=12),
+        title_font=dict(color="#003087", size=14),
     )
+    fig.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+    fig.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
     return fig
 
 
@@ -492,8 +509,10 @@ def render_supervisor_dashboard(df, zone_util_df, proj_df):
     # ── Section 6: GIMS / GeoLink Sync Status ────────────────────────────────
     st.markdown(render_section_header("SECTION 6", "GIMS / GeoLink Integration Status"), unsafe_allow_html=True)
 
-    now_str = datetime.now().strftime("%m/%d/%Y %I:%M %p")
-    np.random.seed(int(datetime.now().strftime("%H")))
+    _houston_tz = pytz.timezone("America/Chicago")
+    _now = datetime.now(_houston_tz)
+    now_str = _now.strftime("%m/%d/%Y %I:%M %p CT")
+    np.random.seed(int(_now.strftime("%H")))
     apps_synced = np.random.randint(8, 18)
     queue_depth = np.random.randint(20, 55)
 
@@ -516,7 +535,7 @@ def render_supervisor_dashboard(df, zone_util_df, proj_df):
             ILMS (Permitting): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#4ade80;">Active</span> &nbsp;|&nbsp; All pending permits synced<br>
             <div style="border-top:1px solid #334155;margin-top:12px;padding-top:10px;color:#64748b;font-size:0.75rem;">
                 Spatial Engine: GeoPandas 0.14+ / Shapely 2.0 / EPSG:2278 &#10003; &nbsp;|&nbsp;
-                Next full sync: {(datetime.now() + timedelta(hours=1)).strftime("%I:%M %p")}
+                Next full sync: {(_now + timedelta(hours=1)).strftime("%I:%M %p CT")}
             </div>
         </div>""",
         unsafe_allow_html=True,

@@ -561,8 +561,12 @@ def render_capacity_map(df, zones_gdf, plants_gdf, zone_util_df, proj_df,
             fig.update_layout(
                 height=380, margin=dict(l=0, r=10, t=40, b=10),
                 showlegend=True, legend_title="Zone Status",
-                plot_bgcolor="white", paper_bgcolor="white",
+                plot_bgcolor="#f8f9fa", paper_bgcolor="white",
+                font=dict(color="#1a1a1a", size=12),
+                title_font=dict(color="#003087", size=14),
             )
+            fig.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+            fig.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
             st.plotly_chart(fig, use_container_width=True)
 
     with col_b:
@@ -589,8 +593,12 @@ def render_capacity_map(df, zones_gdf, plants_gdf, zone_util_df, proj_df,
                                annotation_text="10-day SLA target")
                 fig2.update_layout(
                     height=380, margin=dict(l=0, r=10, t=40, b=10),
-                    plot_bgcolor="white", paper_bgcolor="white",
+                    plot_bgcolor="#f8f9fa", paper_bgcolor="white",
+                    font=dict(color="#1a1a1a", size=12),
+                    title_font=dict(color="#003087", size=14),
                 )
+                fig2.update_xaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
+                fig2.update_yaxes(tickfont=dict(color="#1a1a1a"), title_font=dict(color="#003087"))
                 st.plotly_chart(fig2, use_container_width=True)
             else:
                 st.info("No completed applications in current filter for scatter plot.")

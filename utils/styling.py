@@ -344,14 +344,16 @@ def get_main_css():
         #MainMenu, footer {{ visibility: hidden; }}
         header[data-testid="stHeader"] {{ display: none; }}
 
-        /* ── Force dark readable text globally ───────────────── */
-        html, body, [class*="css"], .stApp {{
+        /* ── Targeted dark text (light backgrounds only) ─────── */
+        .main .block-container p,
+        .main .block-container span,
+        .main .block-container label,
+        .main .block-container div:not([style*="background"]) {{
             color: #1a1a1a !important;
         }}
 
-        [data-testid="stMetricLabel"] {{
-            color: #1a1a1a !important;
-            font-weight: 600 !important;
+        [data-testid="stMetricLabel"] p {{
+            color: #444444 !important;
         }}
 
         [data-testid="stMetricValue"] {{
@@ -359,17 +361,8 @@ def get_main_css():
             font-weight: 700 !important;
         }}
 
-        [data-testid="stSidebar"] * {{
-            color: #1a1a1a !important;
-        }}
-
         h1, h2, h3, h4, h5, h6 {{
             color: #003087 !important;
-            font-weight: 700 !important;
-        }}
-
-        p, span, div, label {{
-            color: #1a1a1a !important;
         }}
 
         [data-testid="stDataFrame"] * {{
@@ -388,6 +381,14 @@ def get_main_css():
         .stTabs [data-baseweb="tab"] {{
             color: #003087 !important;
             font-weight: 600 !important;
+        }}
+
+        /* White text on dark Houston blue backgrounds */
+        [style*="background:#003087"] *,
+        [style*="background: #003087"] *,
+        [style*="background-color:#003087"] *,
+        [style*="background-color: #003087"] * {{
+            color: #ffffff !important;
         }}
     </style>
     """
@@ -451,7 +452,8 @@ def render_badge(text, status_type):
 def render_system_status_bar(last_sync=None):
     if last_sync is None:
         from datetime import datetime
-        last_sync = datetime.now().strftime("%m/%d/%Y %I:%M %p")
+        import pytz
+        last_sync = datetime.now(pytz.timezone("America/Chicago")).strftime("%m/%d/%Y %I:%M %p CT")
     return f"""
     <div class="system-status-bar">
         <span><span class="status-dot-green">&#9679;</span> Q-Flow: Connected</span>

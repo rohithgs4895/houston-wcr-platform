@@ -16,6 +16,7 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 from datetime import date, datetime
+import pytz
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -190,7 +191,7 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
 
     # ── System status bar ─────────────────────────────────────────────────────
     st.markdown(render_section_header("MODULE 2", "WCR Application Tracker"), unsafe_allow_html=True)
-    now_str = datetime.now().strftime("%m/%d/%Y %I:%M %p")
+    now_str = datetime.now(pytz.timezone("America/Chicago")).strftime("%m/%d/%Y %I:%M %p CT")
     st.markdown(render_system_status_bar(now_str), unsafe_allow_html=True)
 
     # ── KPI row ───────────────────────────────────────────────────────────────
