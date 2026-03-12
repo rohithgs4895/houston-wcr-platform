@@ -43,50 +43,34 @@ SLA_EMOJI = {
 }
 
 
-def _sla_bar_html(pct_elapsed, sla_status):
-    color = {
-        "On Track": "#2ecc71",
-        "At Risk": "#f1c40f",
-        "Overdue": "#e74c3c",
-        "Completed": "#3498db",
-    }.get(sla_status, "#2ecc71")
-    fill = min(100, pct_elapsed)
-    return f"""
-    <div style="background:#e5e7eb;border-radius:6px;height:10px;overflow:hidden;margin:4px 0;">
-        <div style="background:{color};width:{fill:.0f}%;height:100%;border-radius:6px;"></div>
-    </div>
-    <div style="font-size:11px;color:#666;">{sla_status} — {fill:.0f}% elapsed</div>
-    """
+def _render_sla_status(sla_info):
+    """Render SLA status using pure Streamlit components."""
+    fill = min(100, int(sla_info["percent_elapsed"]))
+    status = sla_info["status"]
+    deadline = sla_info["deadline"]
+    msg = f"SLA {status} — {fill}% of deadline elapsed | Due: {deadline}"
+    if status == "On Track":
+        st.success(f"✅ {msg}")
+    elif status == "At Risk":
+        st.warning(f"⚠️ {msg}")
+    elif status == "Overdue":
+        st.error(f"🚨 {msg}")
+    else:
+        st.info(f"✔️ {msg}")
+    st.progress(fill / 100)
 
 
-def _fee_table_html(row):
-    return f"""
-    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
-        <tr style="background:#f8f9fa;">
-            <th style="text-align:left;padding:6px 8px;color:#666;font-weight:600;">Fee Component</th>
-            <th style="text-align:right;padding:6px 8px;color:#666;font-weight:600;">Amount</th>
-        </tr>
-        <tr>
-            <td style="padding:5px 8px;border-bottom:1px solid #eee;">Wastewater Impact Fee</td>
-            <td style="text-align:right;padding:5px 8px;border-bottom:1px solid #eee;">${row.get('wastewater_impact_fee',0):,.2f}</td>
-        </tr>
-        <tr>
-            <td style="padding:5px 8px;border-bottom:1px solid #eee;">Water Impact Fee</td>
-            <td style="text-align:right;padding:5px 8px;border-bottom:1px solid #eee;">${row.get('water_impact_fee',0):,.2f}</td>
-        </tr>
-        <tr>
-            <td style="padding:5px 8px;border-bottom:1px solid #eee;">Administrative Fee</td>
-            <td style="text-align:right;padding:5px 8px;border-bottom:1px solid #eee;">$150.00</td>
-        </tr>
-        <tr style="background:#fff8e1;">
-            <td style="padding:6px 8px;font-weight:800;color:{COLORS['houston_blue']};">TOTAL</td>
-            <td style="text-align:right;padding:6px 8px;font-weight:800;color:{COLORS['houston_blue']};">${row.get('total_impact_fee',0):,.2f}</td>
-        </tr>
-    </table>
-    <div style="font-size:11px;color:#999;margin-top:4px;">
-        {row.get('service_units',0):.2f} Service Units @ 250 gpd/SU = {row.get('service_units',0)*250:,.0f} gpd
-    </div>
-    """
+def _render_fee_table(row):
+    """Render impact fee breakdown using pure Streamlit components."""
+    f1, f2, f3, f4 = st.columns(4)
+    f1.metric("Wastewater Fee", f"${row.get('wastewater_impact_fee', 0):,.2f}")
+    f2.metric("Water Fee", f"${row.get('water_impact_fee', 0):,.2f}")
+    f3.metric("Admin Fee", "$150.00")
+    f4.metric("TOTAL", f"${row.get('total_impact_fee', 0):,.2f}")
+    st.caption(
+        f"{row.get('service_units', 0):.2f} SU × 250 gpd = "
+        f"{row.get('service_units', 0) * 250:,.0f} gpd/day"
+    )
 
 
 def _detail_mini_map(app_row, plants_gdf, zones_gdf, zone_util_df):
@@ -365,10 +349,10 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
                 unsafe_allow_html=True,
             )
 
-            # SLA bar
+            # SLA status
             from utils.sla_engine import get_sla_status as get_sla
             sla_info = get_sla(app_row["submission_date"], app_row["status"], app_row.get("expedited", False))
-            st.markdown(_sla_bar_html(sla_info["percent_elapsed"], sla_info["status"]), unsafe_allow_html=True)
+            _render_sla_status(sla_info)
 
             # Application fields
             info_cols = st.columns(2)
@@ -400,7 +384,7 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
             # System IDs
             st.markdown(
                 f'<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;'
-                f'padding:10px 14px;margin:10px 0;font-family:monospace;font-size:12px;">'
+                f'padding:10px 14px;margin:10px 0;font-family:monospace;font-size:12px;color:#1a1a1a;">'
                 f'Q-Flow Queue ID: <b>{app_row.get("q_flow_queue_id","N/A")}</b> &nbsp;|&nbsp; '
                 f'ILMS Permit ID: <b>{app_row.get("ilms_permit_id","N/A")}</b></div>',
                 unsafe_allow_html=True,
@@ -415,7 +399,7 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
 
             # Impact fee breakdown
             st.markdown("**Impact Fee Breakdown**")
-            st.markdown(_fee_table_html(app_row), unsafe_allow_html=True)
+            _render_fee_table(app_row)
 
         with col_right:
             st.markdown("**Location & Zone Map**")
@@ -423,20 +407,10 @@ def render_wcr_tracker(df, plants_gdf, zones_gdf, zone_util_df):
             st_folium(mini_m, width="100%", height=320, returned_objects=[], key=f"mini_map_{app_id}")
 
             # Capacity status card
-            st.markdown(
-                f'<div style="background:#f8fafc;border:1px solid {COLORS["border"]};'
-                f'border-radius:8px;padding:14px;margin-top:10px;">'
-                f'<div style="font-size:0.75rem;font-weight:700;color:{COLORS["text_light"]};'
-                f'text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Zone Capacity Check</div>'
-                f'<table style="width:100%;font-size:13px;border-collapse:collapse;">'
-                f'<tr><td style="color:#666;">Service Units Requested</td>'
-                f'<td style="text-align:right;font-weight:700;">{app_row.get("service_units",0):.1f} SU</td></tr>'
-                f'<tr><td style="color:#666;">Zone Status</td>'
-                f'<td style="text-align:right;font-weight:700;color:{get_utilization_color(50) if cap_status=="Available" else get_utilization_color(95)};">{cap_status}</td></tr>'
-                f'<tr><td style="color:#666;">Gallons/Day</td>'
-                f'<td style="text-align:right;">{app_row.get("service_units",0)*250:,.0f} gpd</td></tr>'
-                f'</table></div>',
-                unsafe_allow_html=True,
-            )
+            st.markdown("**Zone Capacity Check**")
+            cap1, cap2, cap3 = st.columns(3)
+            cap1.metric("Service Units", f"{app_row.get('service_units', 0):.1f}")
+            cap2.metric("Zone Status", cap_status)
+            cap3.metric("Gallons/Day", f"{app_row.get('service_units', 0) * 250:,.0f}")
     else:
         st.info("Select a row in the table above to view application details and mini-map.")

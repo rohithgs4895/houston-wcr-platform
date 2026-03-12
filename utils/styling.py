@@ -267,16 +267,6 @@ def get_main_css():
         .dataframe tbody tr:nth-of-type(even) {{ background: #f8f9fa; }}
         .dataframe tbody tr:hover {{ background: #e8f4f8 !important; }}
 
-        /* ── Sidebar tweaks ──────────────────────────────────── */
-        [data-testid="stSidebar"] {{
-            background: #f8fafc;
-        }}
-        [data-testid="stSidebar"] .sidebar-section-divider {{
-            height: 1px;
-            background: {COLORS['border']};
-            margin: 12px 0;
-        }}
-
         /* ── Sidebar permanently visible ─────────────────────── */
         section[data-testid="stSidebar"] {{
             display: block !important;
@@ -296,6 +286,35 @@ def get_main_css():
             visibility: hidden !important;
             width: 0 !important;
             pointer-events: none !important;
+        }}
+
+        /* ── Sidebar background & readable text ──────────────── */
+        [data-testid="stSidebar"] {{
+            background-color: #f0f4f8 !important;
+        }}
+        [data-testid="stSidebar"] .sidebar-section-divider {{
+            height: 1px;
+            background: {COLORS['border']};
+            margin: 12px 0;
+        }}
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] div,
+        [data-testid="stSidebar"] .stRadio label,
+        [data-testid="stSidebar"] .stMarkdown,
+        [data-testid="stSidebar"] small,
+        [data-testid="stSidebar"] .stSelectbox label,
+        [data-testid="stSidebar"] .stMultiSelect label {{
+            color: #1a1a1a !important;
+            font-weight: 500 !important;
+        }}
+        [data-testid="stSidebar"] h1,
+        [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] h4 {{
+            color: #003087 !important;
+            font-weight: 700 !important;
         }}
 
         /* ── Alert / warning boxes ───────────────────────────── */
