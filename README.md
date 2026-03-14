@@ -1,5 +1,12 @@
 # Houston WCR Intelligence Platform
 
+## 🌐 Live Application
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://houston-wcr-platform-g83787r9csgfcntczhzino.streamlit.app/)
+
+**Live Demo:** https://houston-wcr-platform-g83787r9csgfcntczhzino.streamlit.app/
+
+---
+
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.32%2B-red)
 ![GeoPandas](https://img.shields.io/badge/GeoPandas-0.14%2B-green)
